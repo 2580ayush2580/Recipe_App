@@ -56,45 +56,24 @@ class Burger extends Component {
             purchased: true
         })
     }
-    purchaseCancelHandler = () => {
+    purchaseCancelHandler = () => {  
         this.setState({
             purchased: false
         })
     }
     purchaseContinueHandler = () => {
 
-         this.setState({
-             loading:true
-         })
-
-        const order={
-            ingredients:this.state.ingredients,
-            price:this.state.totalPrice,
-            customer:{
-                name:'Ayush Kumar',
-                address:{
-                    house_no:'466/173',
-                    pinCode:'226003',
-                    country:'India'
-                },
-                email:'2580ayush2580@gmail.com',
-            }
+        const queryParams=[];
+        for(let i in this.state.ingredients){
+            queryParams.push(encodeURIComponent(i)+'='+encodeURIComponent(this.state.ingredients[i]))
         }
-        axios.post('/orders.json',order)
-        .then(response=>{
-            console.log(response)
-            this.setState({
-                loading:false,
-                purchased:false
-            })
+        queryParams.push('price='+this.state.totalPrice)
+         const queryString=queryParams.join('&')    
+ 
+        this.props.history.push({
+            pathname:'/checkout',
+            search:'?'+ queryString
         })
-        .catch(error=>{
-            console.log(error)
-            this.setState({
-                loading:false,
-                purchased:false
-            })
-        });
     }
     addIngredientHandler = (type) => {
         const oldCount = this.state.ingredients[type];
