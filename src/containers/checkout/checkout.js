@@ -1,8 +1,9 @@
 import React,{Component} from 'react'
-import {Route} from 'react-router-dom'
+import {Route,Redirect} from 'react-router-dom'
 import CheckoutSummary from '../../components/order/checkoutsummary/checkoutsummary'
 import ContactData from '../../containers/checkout/contactdata/contactdata'
 import { connect } from 'react-redux'
+import * as actions from '../../store/actions/index'
 
 class Checkout extends Component{
 
@@ -30,7 +31,7 @@ class Checkout extends Component{
     //         totalPrice:price
     //     })
     // }
-    
+
     checkoutCancelHandler=()=>{
         this.props.history.goBack();
     }
@@ -40,24 +41,38 @@ class Checkout extends Component{
     
     render(){
         // console.log(this.state.ingredients)
-
-        return(
-            <div>
-                <CheckoutSummary 
+        let summary = <Redirect to='/' /> 
+       
+        if(this.props.ings){
+            const purchaseRedirect = this.props.purchased ? <Redirect to='/' /> : null ;
+            summary=(
+                <div>
+                {purchaseRedirect}
+                    <CheckoutSummary 
                 ingredients={this.props.ings}
                 checkoutCancel={this.checkoutCancelHandler}
                 checkoutContinue={this.checkoutContinueHandler}
                  />
-                 <Route path={this.props.match.path+'/contact-data'} component={ContactData} />
+                <Route path={this.props.match.path+'/contact-data'} component={ContactData} />
+                </div>
+            )
+        }
+         
+        return(
+            <div>
+                {summary}
             </div>
         )
     }
-}
+} 
 
 const mapStateToProps = state =>{
     return{
-        ings: state.ingredients
+        ings: state.burgerBuilder.ingredients,
+        purchased:state.order.purchased
     }
 }
 
-export default connect(mapStateToProps)(Checkout);                                                                                 
+
+
+export default connect(mapStateToProps)(Checkout);
