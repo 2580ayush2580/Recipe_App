@@ -11,7 +11,7 @@ import withErrorHandler from '../../withErrorHandler/withErrorHandler'
 import * as actions from '../../store/actions/index'
 
 
-class Burger extends Component {
+export class Burger extends Component {
 
     state = {
         purchased: false,
